@@ -1,42 +1,49 @@
-# src/domain_enum.py
-import dns.resolver
 import socket
 
-def resolve_domain(domain):
-    result = {}
+def load_wordlist(file_path=None):
+    default = ["www", "mail", "ftp", "test", "dev", "api"]
 
+    if file_path:
+        try:
+            with open(file_path, "r") as f:
+                return [line.strip() for line in f if line.strip()]
+        except:
+            print("[!] Failed to load wordlist, using default")
+
+    return default
+
+
+def resolve_domain(domain):
     try:
         ip = socket.gethostbyname(domain)
-        result["main_ip"] = ip
+        return {"main_ip": ip}
     except:
-        result["main_ip"] = "Not resolved"
-
-    return result
+        return {"main_ip": "Not resolved"}
 
 
-def find_subdomains(domain):
-    
-    subdomains = ["www", "mail", "ftp", "test", "dev", "api","learn","blog","shop","support","portal","admin","beta","staging"]
-    
+def find_subdomains(domain, wordlist=None):
+    subdomains = load_wordlist(wordlist)
     found = []
 
     for sub in subdomains:
-        full_domain = f"{sub}.{domain}"
+        full = f"{sub}.{domain}"
 
         try:
-            ip = socket.gethostbyname(full_domain)
+            ip = socket.gethostbyname(full)
+
             found.append({
-                "subdomain": full_domain,
+                "subdomain": full,
                 "ip": ip
             })
+
         except:
             pass
 
     return found
 
 
-def scan_domain(domain):
+def scan_domain(domain, wordlist=None):
     return {
         "main": resolve_domain(domain),
-        "subdomains": find_subdomains(domain)
+        "subdomains": find_subdomains(domain, wordlist)
     }
