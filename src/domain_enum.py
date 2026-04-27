@@ -6,9 +6,9 @@ def load_wordlist(file_path=None):
     if file_path:
         try:
             with open(file_path, "r") as f:
-                return [line.strip() for line in f if line.strip()]
+                return [x.strip() for x in f if x.strip()]
         except:
-            print("[!] Failed to load wordlist, using default")
+            pass
 
     return default
 
@@ -22,20 +22,15 @@ def resolve_domain(domain):
 
 
 def find_subdomains(domain, wordlist=None):
-    subdomains = load_wordlist(wordlist)
+    subs = load_wordlist(wordlist)
     found = []
 
-    for sub in subdomains:
-        full = f"{sub}.{domain}"
+    for s in subs:
+        full = f"{s}.{domain}"
 
         try:
             ip = socket.gethostbyname(full)
-
-            found.append({
-                "subdomain": full,
-                "ip": ip
-            })
-
+            found.append({"subdomain": full, "ip": ip})
         except:
             pass
 
