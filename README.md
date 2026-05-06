@@ -80,8 +80,8 @@ The tool operates in three main phases:
 ### Step 1: Clone or download the project
 
 ```bash
-git clone https://example.com/osint-master.git
-cd osint-master
+git clone https://github.com/anass-asbai/OSINT-Master
+cd OSINT-Master
 ```
 
 ### Step 2: Install dependencies
